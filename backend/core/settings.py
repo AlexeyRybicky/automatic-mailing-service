@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-u&&rm(&-3dq+jx9-j@8ly+v4#!+28hpw8mw5!u7v@!oxuzx$c_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -43,6 +43,8 @@ INSTALLED_APPS = [
 LIBRARIES = [
     'rest_framework',
     'drf_yasg',
+    'django_celery_beat',
+    'django_celery_results',
 ]
 
 OUR_APPS = [
@@ -115,6 +117,31 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
+REDIS_HOST = os.getenv('REDIS_HOST')
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': f'redis://{REDIS_HOST}:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
+# save Celery task results in Redis's database
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:6379/0'
+
+# broker_connection_retry_on_startup
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
+# This configures Redis as the datastore between Django + Celery
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:6379/0'
+
+# this allows you to schedule items in the Django admin.
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
 
 
 # Internationalization
