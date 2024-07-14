@@ -9,6 +9,7 @@ env:
   POSTGRES_PORT: 5432
   POSTGRES_USER: test
   POSTGRES_PASSWORD: test
+  REDIS_HOST: '127.0.0.1'
 
 jobs:
   run-tests:
@@ -23,6 +24,11 @@ jobs:
           POSTGRES_PASSWORD: ${{env.POSTGRES_PASSWORD}}
         ports:
           - '5432:5432'
+
+      redis:
+        image: redis:6.0.7
+        ports:
+          - '6379:6379'
 
     runs-on: ubuntu-latest
     steps:
