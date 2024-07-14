@@ -11,6 +11,12 @@ django = "^5.0.7"
 psycopg2 = "^2.9.9"
 djangorestframework = "^3.15.2"
 drf-yasg = "^1.21.7"
+redis = "^5.0.7"
+celery = "^5.4.0"
+django-celery-beat = "^2.6.0"
+django-celery-results = "^2.5.1"
+flower = "^2.0.1"
+django-redis = "^5.4.0"
 
 
 [tool.poetry.group.dev.dependencies]
