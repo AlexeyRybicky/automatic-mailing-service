@@ -11,12 +11,14 @@ services:
       dockerfile: ./Dockerfile
     depends_on:
       - db
+      - redis
     environment:
       - POSTGRES_DB
       - POSTGRES_HOST
       - POSTGRES_PORT
       - POSTGRES_USER
       - POSTGRES_PASSWORD
+      - REDIS_HOST
     ports:
       - "8000:8000"
     volumes:
@@ -31,3 +33,48 @@ services:
       - POSTGRES_PASSWORD
     ports:
       - '5432:5432'
+
+  redis:
+    image: redis:6.0.7
+    restart: always
+    volumes:
+      - redis_volume_data:/data
+    ports:
+      - '6379:6379'
+
+  celery:
+    build:
+      context: ./backend
+    command: >
+      bash -c "poetry run celery --app=core worker -l INFO"
+    volumes:
+      - type: bind
+        source: ./backend
+        target: /usr/src/app
+    environment:
+      - REDIS_HOST
+    links:
+      - redis
+    depends_on:
+      - redis
+
+  celery_flower:
+    build:
+      context: ./backend
+    command: >
+      bash -c "poetry run celery --app=core flower"
+    volumes:
+      - type: bind
+        source: ./backend
+        target: /usr/src/app
+    environment:
+      - REDIS_HOST
+    links:
+      - redis
+    depends_on:
+      - redis
+    ports:
+      - "5555:5555"
+
+volumes:
+  redis_volume_data:
