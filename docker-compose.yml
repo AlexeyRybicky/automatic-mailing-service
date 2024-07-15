@@ -52,6 +52,11 @@ services:
         source: ./backend
         target: /usr/src/app
     environment:
+      - POSTGRES_DB
+      - POSTGRES_HOST
+      - POSTGRES_PORT
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
       - REDIS_HOST
     links:
       - redis
@@ -68,6 +73,11 @@ services:
         source: ./backend
         target: /usr/src/app
     environment:
+      - POSTGRES_DB
+      - POSTGRES_HOST
+      - POSTGRES_PORT
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
       - REDIS_HOST
     links:
       - redis
